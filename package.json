@@ -1,0 +1,19 @@
+{
+  "name": "cloudcompose",
+  "version": "1.0.0",
+  "description": "An open community marketplace for serverless workflows",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/servicefull/cloudcompose.git"
+  },
+  "author": "servicefull",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/servicefull/cloudcompose/issues"
+  },
+  "homepage": "https://github.com/servicefull/cloudcompose#readme"
+}
