@@ -139,9 +139,9 @@ module.exports = (options, callback) => {
 		})
 
 		// Write serverless.yml
-		.then((body) => {
+		.then(() => {
 			logger.log('Write serverless.yml');
-			if(body.data.User.awsRegion) serverlessYml.provider['region'] = body.data.User.awsRegion;
+			if(userAsset.awsRegion) serverlessYml.provider['region'] = userAsset.awsRegion;
 			const y = YAML.stringify(serverlessYml,4);
 			return fileio.writeFile({
 				'path':path.join(props.dir.deploy,'serverless.yml'),
