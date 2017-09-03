@@ -3,11 +3,11 @@ const chalk = require('chalk');
 const fs = require('fs-extra');
 
 const log = (msg) => {
-	return console.log(chalk.blue('clouseCompose') + ' :: ' + msg)
+	return console.log(chalk.blue('cloudeCompose') + ' :: ' + msg)
 }
 
 const err = (msg) => {
-	return console.log(chalk.blue('clouseCompose') + ' :: error :: ' + msg)
+	return console.log(chalk.blue('cloudeCompose') + ' :: error :: ' + msg)
 }
 
 module.exports = {

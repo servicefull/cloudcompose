@@ -5,6 +5,7 @@ const YAML = require('yamljs');
 const fileio = require('../utils/fileio');
 const graphql = require('../utils/graphql');
 const childProcess = require('../utils/child-process');
+const logger = require('../utils/logger');
 
 module.exports = (options, callback) => {
 
@@ -56,6 +57,7 @@ module.exports = (options, callback) => {
 
 	// Validate options
 	const validate = () => {
+		logger.log('validate');
 		if(!payload.data) {
 			return Promise.reject('Deployment data does not exist');
 		} else {
@@ -66,6 +68,7 @@ module.exports = (options, callback) => {
 
 	// Write function files
 	const writeFunctionFiles = () => {
+		logger.log('writeFunctionFiles');
 		return new Promise((resolve,reject) => {
 			if(functions.length > 0) {
 				let cnt = 0;
@@ -99,6 +102,7 @@ module.exports = (options, callback) => {
 
 		// Ensure deployment directory
 		.then(() => {
+			logger.log('Ensure deployment directory');
 			return fileio.ensureDir({
 				"path":props.dir.deploy
 			})
@@ -106,6 +110,7 @@ module.exports = (options, callback) => {
 
 		// Empty deployment directory
 		.then(() => {
+			logger.log('Empty deployment directory');
 			return fileio.emptyDir({
 				"path":props.dir.deploy
 			})
@@ -113,6 +118,7 @@ module.exports = (options, callback) => {
 
 		// Read from GraphQL
 		.then(() => {
+			logger.log('Read from GraphQL');
 			return graphql.query({
 				'query':gqlQuery,
 				'vars':{
@@ -124,6 +130,7 @@ module.exports = (options, callback) => {
 
 		// Write functions
 		.then((body) => {
+			logger.log('Write functions');
 			functionAsset = body.data.Service;
 			userAsset = body.data.User;
 			serverlessYml = YAML.parse(functionAsset.serverlessYml);
@@ -132,7 +139,8 @@ module.exports = (options, callback) => {
 		})
 
 		// Write serverless.yml
-		.then(() => {
+		.then((body) => {
+			logger.log('Write serverless.yml');
 			if(body.data.User.awsRegion) serverlessYml.provider['region'] = body.data.User.awsRegion;
 			const y = YAML.stringify(serverlessYml,4);
 			return fileio.writeFile({
@@ -144,6 +152,7 @@ module.exports = (options, callback) => {
 
 		// Set AWS credentials
 		.then(() => {
+			logger.log('Set AWS credentials');
 			const cmdstring = 'serverless config credentials --profile ' + userAsset.token.token + ' --provider aws --key '+userAsset.awsAccessKeyId+' --secret '+userAsset.awsSecretAccessKey;
 			return childProcess({
 				'title':'serverlessAwsCreds',
@@ -154,6 +163,7 @@ module.exports = (options, callback) => {
 
 		// Deploy package
 		.then(() => {
+			logger.log('Deploy package');
 			const cmdstring = 'serverless deploy';
 			return childProcess({
 				'title':'serverlessDeploy',
@@ -163,19 +173,21 @@ module.exports = (options, callback) => {
 		})
 
 		// Update GraphQL
-		.then((log) => {
+		.then((serverlessLog) => {
+			logger.log('Update GraphQL');
 			return graphql.update({
 				'query':mutationQuery,
 				'vars':{
 					'deploymentId':payload.data.Deployment.node.id,
 					'status':"complete",
-					'log':log
+					'log':serverlessLog
 				}
 			})
 		})
 
 		// Finish Up
 		.then((body) => {
+			logger.log('Finish Up');
 			callback(body);
 		})
 }
