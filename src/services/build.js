@@ -25,13 +25,15 @@ module.exports = (options, callback) => {
 	let packageOptions = {};
 	let deployOptions = {};
 	let envfile = [];
-	let functions = []
+	let functions = [];
+	let packageJson = false;
 
 	//
 	const gqlQuery = `query($serviceId: ID!, $authorId: ID!) {
 		Service(id: $serviceId) {
 			title
 			serverlessYml
+			packageJson
 			functions {
         id
         title
@@ -148,6 +150,35 @@ module.exports = (options, callback) => {
 				'body':y,
 				'encoding':'utf8'
 			})
+		})
+
+		// Write package.json
+		.then(() => {
+			logger.log('Write package.json');
+			if(functionAsset.packageJson) {
+				return fileio.writeFile({
+					'path':path.join(props.dir.deploy,'package.json'),
+					'body':functionAsset.packageJson,
+					'encoding':'utf8'
+				})
+			} else {
+				return Promise.resolve();
+			}
+		})
+
+		// Write package.json
+		.then((packagejson) => {
+			if(packagejson) {
+				logger.log('Run NPM install');
+				const cmdstring = 'npm install';
+				return childProcess({
+					'title':'npmInstall',
+					'process':cmdstring,
+					'cwd':props.dir.deploy
+				});
+			} else {
+				return Promise.resolve();
+			}
 		})
 
 		// Set AWS credentials

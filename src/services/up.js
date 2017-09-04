@@ -24,7 +24,8 @@ module.exports = (_options,callback) => {
 		'yml':null,
 		'readme':null,
 		'keywords':null,
-		'description':null
+		'description':null,
+		'packageJson':null
 	}
 
 	const validate = () => {
@@ -157,6 +158,7 @@ module.exports = (_options,callback) => {
 		// Set packageJson and then get serverless yml
 		.then((data) => {
 			if(data) {
+				serviceObj.packageJson = data;
 				packageJson = JSON.parse(data);
 				if(packageJson.keywords) {
 					serviceObj.keywords = packageJson.keywords;
@@ -214,9 +216,10 @@ module.exports = (_options,callback) => {
 		// Post to lambda
 		.then((response) => {
 			logger.log('Sending Service to cloudCompose');
+			/*
 			return request({
 				method: 'POST',
-				url: 'https://v9zjlp1anf.execute-api.us-east-1.amazonaws.com/dev/up',
+				url: 'https://v9zjlp1anf.execute-api.us-east-1.amazonaws.com/prod/up',
 				headers: {
 					'cache-control': 'no-cache',
 					'content-Type': 'application/json'
@@ -226,6 +229,7 @@ module.exports = (_options,callback) => {
 			},(err) => {
 				callback('Unable to send service to cloudCompose.  Please check that your access key is entered correctly by running cloudCompose init');
 			});
+			*/
 		})
 
 		// Finish up
