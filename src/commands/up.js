@@ -19,19 +19,23 @@ class UpCmd extends Command {
   help() {
     return {
       description: 'Deploys a service to the cloudCompose registry',
-      args: [
-        'path'
-      ]
+			flags: {
+        p: 'Specify a path to a service'
+      },
+      vflags: {
+        'path': 'Specify a path to a service'
+      }
     };
   }
 
   run(params, callback) {
 
-    let path = params.args[0];
-
-    // if (!path) {
-			// return callback(new Error('Please specify a deployment path to a directory with a serverless.yml'));
-    // }
+    let path = process.cwd();
+		if(params.vflags.path) {
+			path = params.vflags.path
+		} else if(params.flags.p) {
+			path = params.flags.p
+		}
 
 		Creds.read().then((data) => {
 			if (!data) {
@@ -48,7 +52,7 @@ class UpCmd extends Command {
 			USER_ACCESS_TOKEN = data;
 
 			Services.up({
-				"path":path,
+				"path":path.toString(),
 				"token":USER_ACCESS_TOKEN
 			},(err,results) => {
 				if(err) {
