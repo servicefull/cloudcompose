@@ -216,7 +216,6 @@ module.exports = (_options,callback) => {
 		// Post to lambda
 		.then((response) => {
 			logger.log('Sending Service to cloudCompose');
-			/*
 			return request({
 				method: 'POST',
 				url: 'https://v9zjlp1anf.execute-api.us-east-1.amazonaws.com/prod/up',
@@ -229,7 +228,6 @@ module.exports = (_options,callback) => {
 			},(err) => {
 				callback('Unable to send service to cloudCompose.  Please check that your access key is entered correctly by running cloudCompose init');
 			});
-			*/
 		})
 
 		// Finish up
