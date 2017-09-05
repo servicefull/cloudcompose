@@ -1,6 +1,6 @@
 {
   "name": "cloudcompose",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "An open community marketplace for serverless workflows. https://cloudcompose.io",
   "main": "src/index.js",
   "bin": {
