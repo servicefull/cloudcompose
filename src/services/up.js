@@ -72,21 +72,17 @@ module.exports = (_options,callback) => {
 	const loadFunctionCode = () => {
 		return new Promise((resolve,reject) => {
 			if(functionPaths.length > 0) {
-				let cnt = 0;
 				const mgr = () => {
-					if(cnt > functionPaths.length) {
+					if(functionPaths.length < 1) {
 						resolve();
 					} else {
 						const funcObj = functionPaths.pop();
-						cnt++;
-
 						const readOptions = {
 							'path':funcObj.path,
 							'config':{
 								encoding:'utf8'
 							}
 						}
-
 						fileio.readFile(readOptions).then((data) => {
 							functionCode.push({title:funcObj.name,code:JSON.stringify(data)});
 							return mgr();
