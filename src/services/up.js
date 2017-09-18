@@ -214,7 +214,7 @@ module.exports = (_options,callback) => {
 			logger.log('Sending Service to cloudCompose');
 			return request({
 				method: 'POST',
-				url: 'https://ye5d2t3j6k.execute-api.us-east-1.amazonaws.com/prod/up',
+				url: 'https://nrlxmcfyll.execute-api.us-east-1.amazonaws.com/prod/up',
 				headers: {
 					'cache-control': 'no-cache',
 					'content-Type': 'application/json'
